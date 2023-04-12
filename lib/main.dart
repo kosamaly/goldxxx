@@ -3,8 +3,10 @@ import 'package:selver_apitest1/dio_helper.dart';
 import 'main_screen.dart';
 
 void main() {
+  // Initialization code
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
+
   runApp(const MyApp());
 }
 

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class DioHelper {
   static Dio? dio;
-  //https://www.goldapi.io/api/XAG/USD/
+
   static init() {
     dio = Dio(BaseOptions(
       baseUrl: 'https://www.goldapi.io/api',
@@ -10,9 +10,10 @@ class DioHelper {
     ));
   }
 
-  static Future<Response> getData(String Url) {
+  static Future<Response> getData(String path) {
+    // url =  '/XAG/USD/'
     dio!.options.headers = {'x-access-token': 'goldapi-7e18orlgagahww-io'};
 
-    return dio!.get(Url);
+    return dio!.get(path);
   }
 }
