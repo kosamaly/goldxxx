@@ -79,18 +79,16 @@ class _ManiScreenState extends State<ManiScreen> {
                 const SizedBox(
                   height: 16,
                 ),
-                Container(
-                  child: Center(
-                    /// Circular indicator progress
+                Center(
+                  /// Circular indicator progress
 
-                    child: !_isLoading
-                        ? const Text("")
-                        : const CircularProgressIndicator(
-                            strokeWidth: 9,
-                            backgroundColor: Colors.orangeAccent,
-                            color: Colors.white,
-                          ),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          strokeWidth: 9,
+                          backgroundColor: Colors.orangeAccent,
+                          color: Colors.white,
+                        )
+                      : const SizedBox.shrink(),
                 ),
 
                 ///   to remove null from the page
@@ -118,46 +116,32 @@ class _ManiScreenState extends State<ManiScreen> {
                 elevation: 30,
               ),
               onPressed: () async {
+                // Show loading
                 setState(() {
                   _isLoading = true;
                 });
 
+                // Fetch data
+                await getGoldPrice();
+
+                // Hide loading
                 setState(() {
                   _isLoading = false;
-                  double? result = goldD;
-                  print(" Up to date price:$result");
-
-                  Navigator.pushReplacementNamed(context, "/result",
-                      arguments: result);
                 });
 
-//                 Container(
-//                   padding: const EdgeInsets.all(50),
-//                   margin: const EdgeInsets.all(50),
-//                   color: Colors.blue[100],
-// //widget shown according to the state
-//                   child: Center(
-//                     child: !_isLoading
-//                         ? const Text("Loading Complete")
-//                         : const CircularProgressIndicator(
-//                             backgroundColor: Colors.redAccent,
-//                             strokeWidth: 10,
-//                           ),
-//                   ),
-//                 );
-
-                // showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return Center(
-                //           child: CircularProgressIndicator(
-                //         backgroundColor: Colors.orangeAccent,
-                //         valueColor: AlwaysStoppedAnimation(Colors.white),
-                //         strokeWidth: 20,
-                //       ));
-                //     });
-
-                //   Navigator.pop(context); // use this if you hav another page but here we hv one page
+                // Error Handling
+                if (goldD != null) {
+                  Navigator.pushNamed(context, "/result", arguments: goldD);
+                } else {
+                  // Toast error
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.white,
+                      content: Center(
+                          child: Text(
+                        "Error loading data",
+                        style: TextStyle(fontSize: 18, color: Colors.red),
+                      ))));
+                }
               },
               child: Container(
                 alignment: Alignment.center,
@@ -200,8 +184,8 @@ class _ManiScreenState extends State<ManiScreen> {
   double? gold21;
   double? gold24;
 
-  getGoldPrice() {
-    DioHelper.getData('/XAU/USD/').then((value) {
+  Future<void> getGoldPrice() async {
+    await DioHelper.getData('/XAU/USD/').then((value) {
       log(value.toString());
       setState(() {
         goldD = value.data['price'];
