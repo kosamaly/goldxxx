@@ -12,6 +12,8 @@ class ManiScreen extends StatefulWidget {
 }
 
 class _ManiScreenState extends State<ManiScreen> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,35 +67,50 @@ class _ManiScreenState extends State<ManiScreen> {
             const SizedBox(
               height: 16,
             ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center, //x
+              mainAxisAlignment: MainAxisAlignment.center, //y
+              children: [
+                const Icon(
+                  Icons.currency_exchange,
+                  size: 32,
+                  color: Colors.cyanAccent,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  child: Center(
+                    /// Circular indicator progress
+
+                    child: !_isLoading
+                        ? const Text("")
+                        : const CircularProgressIndicator(
+                            strokeWidth: 9,
+                            backgroundColor: Colors.orangeAccent,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+
+                ///   to remove null from the page
+                if (goldD != null)
+                  Text(
+                    "Gold Price :  result = $goldD USD",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
               width: MediaQuery.of(context).size.width * 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, //x
-                mainAxisAlignment: MainAxisAlignment.center, //y
-                children: [
-                  const Icon(
-                    Icons.currency_exchange,
-                    size: 32,
-                    color: Colors.cyanAccent,
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  if (goldD != null)
-                    Text(
-                      "Gold Price : $goldD USD",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                ],
-              ),
             ),
             const SizedBox(
-              height: 100,
+              height: 2,
             ),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
@@ -101,7 +118,46 @@ class _ManiScreenState extends State<ManiScreen> {
                 elevation: 30,
               ),
               onPressed: () async {
-                getGoldPrice();
+                setState(() {
+                  _isLoading = true;
+                });
+
+                setState(() {
+                  _isLoading = false;
+                  double? result = goldD;
+                  print(" Up to date price:$result");
+
+                  Navigator.pushReplacementNamed(context, "/result",
+                      arguments: result);
+                });
+
+//                 Container(
+//                   padding: const EdgeInsets.all(50),
+//                   margin: const EdgeInsets.all(50),
+//                   color: Colors.blue[100],
+// //widget shown according to the state
+//                   child: Center(
+//                     child: !_isLoading
+//                         ? const Text("Loading Complete")
+//                         : const CircularProgressIndicator(
+//                             backgroundColor: Colors.redAccent,
+//                             strokeWidth: 10,
+//                           ),
+//                   ),
+//                 );
+
+                // showDialog(
+                //     context: context,
+                //     builder: (context) {
+                //       return Center(
+                //           child: CircularProgressIndicator(
+                //         backgroundColor: Colors.orangeAccent,
+                //         valueColor: AlwaysStoppedAnimation(Colors.white),
+                //         strokeWidth: 20,
+                //       ));
+                //     });
+
+                //   Navigator.pop(context); // use this if you hav another page but here we hv one page
               },
               child: Container(
                 alignment: Alignment.center,
