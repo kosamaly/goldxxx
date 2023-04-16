@@ -131,9 +131,11 @@ class _ManiScreenState extends State<ManiScreen> {
 
                 // Error Handling
                 if (goldD != null) {
+                  // ignore: use_build_context_synchronously
                   Navigator.pushNamed(context, "/result", arguments: goldD);
                 } else {
                   // Toast error
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: Colors.white,
                       content: Center(
